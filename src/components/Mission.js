@@ -16,14 +16,22 @@ export default function Mission({ handleResult, handleTimeTaken }) {
 
   useEffect(() => {
     let fetchPlanets = async () => {
-      let response = await fetch(URL_FOR_PLANETS);
-      let plantesData = await response.json();
-      setPlanets(plantesData);
+      try {
+        let response = await fetch(URL_FOR_PLANETS);
+        let plantesData = await response.json();
+        setPlanets(plantesData);
+      } catch (err) {
+        console.error("Error in fetching Data for Planets : ", err);
+      }
     };
     let fetchSpaceships = async () => {
-      let response = await fetch(URL_FOR_SPACESHIPS);
-      let spaceshipsData = await response.json();
-      setSpaceships(spaceshipsData);
+      try {
+        let response = await fetch(URL_FOR_SPACESHIPS);
+        let spaceshipsData = await response.json();
+        setSpaceships(spaceshipsData);
+      } catch (err) {
+        console.err("Error in fetching Data for Spaceships : ", err);
+      }
     };
 
     fetchPlanets();
@@ -34,23 +42,23 @@ export default function Mission({ handleResult, handleTimeTaken }) {
     let responseToken = await fetch(URL_TOKEN, {
       method: "POST",
       headers: {
-        Accept: "application/json"
-      }
+        Accept: "application/json",
+      },
     });
     let dataToken = await responseToken.json();
     let token = dataToken.token;
     let obj = {
       token: token,
       planet_names: selectedPlanets,
-      vehicle_names: selectedSpaceships
+      vehicle_names: selectedSpaceships,
     };
     let resp = await fetch(URL_RESULTS, {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(obj)
+      body: JSON.stringify(obj),
     });
 
     let data = await resp.json();
@@ -64,7 +72,13 @@ export default function Mission({ handleResult, handleTimeTaken }) {
       <h5 style={{ textAlign: "center" }}>
         Search planets you want to search in:
       </h5>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          flexWrap: "wrap",
+        }}
+      >
         <Selection
           text="Destination 1"
           planets={planets}
